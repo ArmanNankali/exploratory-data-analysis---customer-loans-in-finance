@@ -101,7 +101,8 @@ class Plotter():
         plt.title(f"Box Plot of {self.col}")
         plt.show()
     
-    def correlation_matrix(self):
+    def correlation_matrix(self, matrix_name):
+        self.matrix_name = matrix_name
         numerical_df = self.df.select_dtypes(include=['int64', 'float64'])
         corr = numerical_df.corr()
         mask = np.zeros_like(corr, dtype=np.bool_)
@@ -110,36 +111,9 @@ class Plotter():
         sns.heatmap(corr, mask=mask, 
             square=True, linewidths=1, annot=False, cmap=cmap)
         plt.yticks(rotation=0)
-        plt.title('Correlation Matrix of all Numerical Variables')
+        plt.title(f"Correlation Matrix of all Numerical Variables: {matrix_name}")
         plt.show()
     
-    def correlation_matrix_no_nulls(self):
-    # Create a temporary copy of the DataFrame
-        temp_df = self.df.copy()
-
-    # Select only numerical columns
-        numerical_df = temp_df.select_dtypes(include=['int64', 'float64'])
-
-    # Drop rows with null values
-        numerical_df = numerical_df.dropna()
-
-    # Calculate correlation matrix
-        corr = numerical_df.corr()
-
-    # Create a mask for the upper triangle of the correlation matrix
-        mask = np.zeros_like(corr, dtype=np.bool_)
-        mask[np.triu_indices_from(mask)] = True
-
-    # Create a diverging color palette for the heatmap
-        cmap = sns.diverging_palette(220, 10, as_cmap=True)
-
-    # Create the heatmap
-        sns.heatmap(corr, mask=mask, square=True, linewidths=1, annot=False, cmap=cmap)
-
-        plt.yticks(rotation=0)
-        plt.title('Correlation Matrix of all Numerical Variables')
-        plt.show()
-
     def kde(self, col):
         self.col = col
         sns.kdeplot(self.df[self.col].dropna(), shade=True)
